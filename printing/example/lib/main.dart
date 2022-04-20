@@ -11,18 +11,33 @@ Future<void> main() async {
   runApp(const MyApp('Printing Demo'));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp(this.title, {Key? key}) : super(key: key);
 
   final String title;
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final ActionsController controller = ActionsController();
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: Text(title)),
-        body: PdfPreview(
-          build: (format) => _generatePdf(format, title),
+        appBar: AppBar(title: Text(widget.title)),
+        body: Stack(
+          children: [
+            PdfPreview(
+              controller: controller,
+              build: (format) => _generatePdf(format, widget.title),
+            ),
+            ElevatedButton(onPressed: (){
+              controller.print();
+            }, child: Text("Pruebaaa"))
+          ],
         ),
       ),
     );

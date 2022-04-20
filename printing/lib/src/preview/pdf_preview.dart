@@ -60,13 +60,15 @@ class PdfPreview extends StatefulWidget {
     this.shouldRepaint = false,
     this.loadingWidget,
     this.onPageFormatChanged,
-    this.dpi,
+    this.dpi, this.controller,
   }) : super(key: key);
 
   static const _defaultPageFormats = <String, PdfPageFormat>{
     'A4': PdfPageFormat.a4,
     'Letter': PdfPageFormat.letter,
   };
+
+  final ActionsController? controller;
 
   /// Called when a pdf document is needed
   final LayoutCallback build;
@@ -194,6 +196,7 @@ class _PdfPreviewState extends State<PdfPreview> {
 
   @override
   void initState() {
+    widget.controller?.onPrint = widget.onPrinted;
     previewData = PdfPreviewData(
       buildDocument: widget.build,
       pageFormats: widget.pageFormats.isNotEmpty
@@ -357,5 +360,20 @@ class _PdfPreviewState extends State<PdfPreview> {
         ],
       ),
     );
+  }
+}
+
+class ActionsController{
+
+  ActionsController();
+
+  Function? _print;
+
+  set onPrint(Function? print){
+    _print = print;
+  }
+
+  void print(){
+    _print?.call();
   }
 }
